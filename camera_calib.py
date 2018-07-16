@@ -9,7 +9,7 @@ path2 = "files/R/pic6.png"
 folder1 = "files/L"
 folder2 = "files/R"
 
-CONST = 74
+CONST = 74 #TODO: const what?
 
 '''
 objpoints = []
@@ -33,8 +33,8 @@ def innerCalib(folder):     #run once
     objp = np.zeros((9*6, 3), np.float32)
     objp[:, :2] = np.mgrid[0:9, 0:6].T.reshape(-1, 2)
     for filename in os.listdir(folder):
-        #print filename
-        #print folder+"/"+filename
+        #print(  filename )
+        #print(  folder+"/"+filename )
         img = cv.imread(folder+"/"+filename)
         objpoints.append(objp*CONST)
         gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
