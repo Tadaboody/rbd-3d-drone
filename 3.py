@@ -42,7 +42,7 @@ def innerCalib(folder):     #run once
         ret_img, corners_img = cv.findChessboardCorners(gray, (9, 6), None)
         imgpoints.append(corners_img)
     ret_calib, CMat, DistCoff, rv, tv = cv.calibrateCamera(objpoints,imgpoints,img_shape,None,None)
-    print CMat
+    print(CMat)
     return CMat
 
 def PnP(impath,arr):
@@ -58,7 +58,7 @@ def PnP(impath,arr):
     ret_img, corners_img = cv.findChessboardCorners(gray, (9, 6), None)
     imgpoints.append(corners_img)
     ret,rv,tv = cv.solvePnP(objp,np.array(corners_img),arr,None)
-    print "rt \n", cv.Rodrigues(rv)[0],tv
+    print("rt \n", cv.Rodrigues(rv)[0],tv)
     return cv.Rodrigues(rv)[0],tv
 
 def externalCalib(proj1,proj2,points1,points2):
@@ -68,8 +68,8 @@ def externalCalib(proj1,proj2,points1,points2):
         pts3D[i] = [point[0]/point[3],point[1]/point[3],point[2]/point[3]]
 
     for point in pts3D:
-        print point
-    print "done"
+        print(point)
+    print("done")
     return pts3D
 
 
@@ -79,7 +79,7 @@ def externalCalib(proj1,proj2,points1,points2):
 def main():
     #innerCalib(folder1)
     #innerCalib(folder2)
-    print "a"
+    print("a")
     arr1 = np.array([[438.40566405, 0. ,295.56570293],
                      [0. ,443.89587156, 187.76492822],
                      [0., 0., 1.]])
@@ -106,14 +106,19 @@ def main():
     viz_frame2 = im2.copy()
     points1 = np.array([points1[0],points1[1],points1[8],points1[45],points1[-2],points1[-1]])
     points2 = [points2[0],points2[1],points2[8],points2[45],points2[-2],points2[-1]]
-    for point1,point2 in zip(points1,points2):
+
+    def draw_circle(frame,point):
         cv.circle(viz_frame1,tuple(map(int ,point1.tolist()[0])),5,(0,255,0),-1)
-        cv.circle(viz_frame2,tuple(map(int ,point2.tolist()[0])),5,(0,255,0),-1)
+
+    for point1,point2 in zip(points1,points2):
+        draw_circle(viz_frame1,point1)
+        draw_circle(viz_frame2,point2)
+
     cv.imshow("1",viz_frame1)
     cv.imshow("2",viz_frame2)
 
     #
-    print externalCalib(proj1,proj2,points1,np.array(points2))
+    print(externalCalib(proj1,proj2,points1,np.array(points2)))
 
     if cv.waitKey(0) & 0xFF == ord('q'):
         pass

@@ -14,7 +14,7 @@ class KPoint:
     '''
     def __init__(self, label, kp, desc):
         self._label = label
-        self._pt = map(int,kp.pt)    #do something?
+        self._pt = [int(point) for point in kp.pt] #do something?
         self._size = kp.size
         self._desc = desc
 
@@ -36,7 +36,7 @@ def find_features(frame, old_keyPoints):
         label = "AA"#next_name()
         ret.append(KPoint(label,pt,des))
 
-    print ret[2]
+    print(ret[2])
     return ret
 
 def next_name():
@@ -54,7 +54,7 @@ def opticalFlow(old_frame, curr_frame, keyPoints):
     pt, st, er = cv2.calcOpticalFlowPyrLK(
         old_frame,
         curr_frame,
-        np.array(map(lambda x: [map(float, x._pt)], keyPoints)).astype(np.float32),
+        np.array([[float(point) for point in x._pt] for x in keyPoints]).astype(np.float32),
         None,
         winSize  = (15,15),
         maxLevel = 2,
@@ -62,7 +62,7 @@ def opticalFlow(old_frame, curr_frame, keyPoints):
     )
     for kp,p in zip(keyPoints,pt):
         p = p[0]
-        kp._pt = map(int, p)
+        kp._pt = [int(point) for point in p]
 
 def export_to_csv(keyPoints):
     pass
@@ -89,10 +89,10 @@ def main():
         ret, frame = cap.read()         #read next frame
         frame = img_process(frame);
 
-        print old_frame
+        print(old_frame)
         if old_frame is not None:
             opticalFlow(old_frame,frame,kp)
-            print "here"
+            print("here")
         else:
             kp = find_features(frame,kp)
 

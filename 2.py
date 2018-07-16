@@ -10,7 +10,7 @@ rpath1 = "files/1pic1R.png"
 rpath2 = "files/pic2r.png"
 
 
-CONST = 7.4
+CONST = 7.4 #TODO: const what?
 def cameraCalibrate(img,inp):
     objpoints = []
     objp = np.zeros((9*6, 3), np.float32)
@@ -25,7 +25,8 @@ def cameraCalibrate(img,inp):
 
     viz_frame = img.copy()
     for point in corners_img[:2]:
-        cv.circle(viz_frame,tuple(map(int ,point.tolist()[0])),5,(0,255,0),-1)
+        cv.circle(viz_frame,tuple(map(int ,point.tolist()[0])),5,(0,255,0),-1) #TODO: convert to list comprehension
+
     '''
     cv.imshow("ib",viz_frame)
     if cv.waitKey(0) & 0xFF == ord('q'):
@@ -84,8 +85,8 @@ def stereoCalibrate(img1, img2,inp1,inp2):
     print "e", E
     print "f", F
     '''
-    print "R*T \n", np.dot(R,T)
-    print "R'*T \n", np.dot(np.transpose(R),T)
+    print("R*T \n", np.dot(R,T))
+    print("R'*T \n", np.dot(np.transpose(R),T))
 
     return M1, d1, M2, d2, R, T
 
@@ -94,7 +95,7 @@ def triangultion(img1,img2):
     objp = np.zeros((9*6, 3), np.float32)
     objp[:, :2] = np.mgrid[0:9, 0:6].T.reshape(-1, 2)
     objpoints.append(objp*CONST)
-    print objpoints
+    print(objpoints)
     gray = cv.cvtColor(img1, cv.COLOR_BGR2GRAY)
     shape = gray.shape[::-1]
 
@@ -107,13 +108,13 @@ def ib(img1,img2):
 
 
     rv1,tv1 = cameraCalibrate(img1,inp1)
-    print "R1", rv1
-    print "\n R1*T1 \n", np.dot(rv1,tv1)
+    print("R1", rv1)
+    print("\n R1*T1 \n", np.dot(rv1,tv1))
     rv2,tv2 = cameraCalibrate(img2,inp2)
-    print "R2", rv2
-    print "\n R2*T2 \n", np.dot(rv2,tv2)
+    print("R2", rv2)
+    print("\n R2*T2 \n", np.dot(rv2,tv2))
     ans = np.dot((rv1),tv1)-np.dot((rv2),tv2)
-    print "\n ans:\n", ans
+    print("\n ans:\n", ans)
 
 
 
