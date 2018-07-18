@@ -1,7 +1,7 @@
 import cv2 as cv
 import numpy as np
 import os
-
+from collections import namedtuple
 path1 = "files/L/pic6.png"
 path2 = "files/R/pic6.png"
 #a1 = "files/a/pic1L.png"
@@ -76,10 +76,34 @@ def externalCalib(proj1,proj2,points1,points2):
 
 
 
+GREEN = (0,255,0)
+Extracted_Calibration = namedtuple(
+    "ExtractedCalibration", ['proj', 'points'])  # TODO: rename
+
 def main():
     #innerCalib(folder1)
     #innerCalib(folder2)
     print("a")
+
+    def extract_calibration(arr : np.ndarray, path:str) -> Extracted_Calibration: #TODO: rename
+        rv, tv = PnP(path, arr)
+        proj = np.dot(arr, np.concatenate((rv, tv), axis=1))
+        im = cv.imread(path)
+        gray = cv.cvtColor(im, cv.COLOR_BGR2GRAY)
+        _, points = cv.findChessboardCorners(gray, (9, 6), None)
+        magic_indices = [0, 1, 8, 45, -2, -1]  # TODO: rename
+        points = np.array([points[i] for i in magic_indices])
+        draw_calib(im, points)
+        return Extracted_Calibration(proj, points)
+
+    def draw_calib(im:np.ndarray, points)->np.ndarray:
+        viz_frame = im.copy()
+        for point in points:
+            cv.circle(viz_frame, tuple(
+                map(int, point.tolist()[0])), 5, GREEN, -1)
+        return viz_frame
+
+        
     arr1 = np.array([[438.40566405, 0. ,295.56570293],
                      [0. ,443.89587156, 187.76492822],
                      [0., 0., 1.]])
@@ -87,38 +111,17 @@ def main():
                      [0., 448.39171467, 256.63590166],
                      [0., 0., 1.]])
 
-    arr1 = np.array([[479,0,303],[0,383,217],[0,0,1]])
-    arr2 = np.array([[479,0,338],[0,481,234],[0,0,1]])
-    rv1,tv1 = PnP(path1,arr1)
-    rv2,tv2 = PnP(path2,arr2)
-
-    proj1 = np.dot(arr1,np.concatenate((rv1,tv1),axis = 1))
-    proj2 = np.dot(arr2,np.concatenate((rv2,tv2),axis = 1))
-    im1 = cv.imread(path1)
-    im2 = cv.imread(path2)
-    gray1 = cv.cvtColor(im1, cv.COLOR_BGR2GRAY)
-    _, points1 = cv.findChessboardCorners(gray1, (9, 6), None)
-    gray2 = cv.cvtColor(im2, cv.COLOR_BGR2GRAY)
-    _, points2 = cv.findChessboardCorners(gray2, (9, 6), None)
-
-
-    viz_frame1 = im1.copy()
-    viz_frame2 = im2.copy()
-    points1 = np.array([points1[0],points1[1],points1[8],points1[45],points1[-2],points1[-1]])
-    points2 = [points2[0],points2[1],points2[8],points2[45],points2[-2],points2[-1]]
-
-    def draw_circle(frame,point):
-        cv.circle(viz_frame1,tuple(map(int ,point1.tolist()[0])),5,(0,255,0),-1)
-
-    for point1,point2 in zip(points1,points2):
-        draw_circle(viz_frame1,point1)
-        draw_circle(viz_frame2,point2)
-
-    cv.imshow("1",viz_frame1)
-    cv.imshow("2",viz_frame2)
+    arr1 = np.array([[479, 0, 303], [0, 383, 217], [0, 0, 1]])
+    arr2 = np.array([[479, 0, 338], [0, 481, 234], [0, 0, 1]])  # TODO: names
+    arrays = [arr1, arr2]
+    paths = [path1, path2]
+    calibrations = [extract_calibration(arr,path) for arr,path in zip(arrays,paths)]
+    
+    cv.imshow("1", draw_calib(arrays[0], calibrations[0].points))
+    cv.imshow("2", draw_calib(arrays[1], calibrations[1].points))
 
     #
-    print(externalCalib(proj1,proj2,points1,np.array(points2)))
+    print(externalCalib(calibrations[0].proj, calibrations[1].proj, np.array(calibrations[0].point), np.array(calibrations[0].point))))
 
     if cv.waitKey(0) & 0xFF == ord('q'):
         pass
