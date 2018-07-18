@@ -1,0 +1,3 @@
+[submodule "Model-Drone"]
+	path = Model-Drone
+	url = git@github.com:Royz2123/Model-Drone.git
