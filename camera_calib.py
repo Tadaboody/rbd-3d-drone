@@ -2,29 +2,19 @@ import cv2 as cv
 import numpy as np
 import os
 from collections import namedtuple
-path1 = "files/L/pic6.png"
-path2 = "files/R/pic6.png"
+FEATURE_PARAMS = dict(  maxCorners = 250,
+                        qualityLevel = 0.2,
+                        minDistance = 50,
+                        blockSize = 7 )
+path1 = "pic1L.png"
+path2 = "pic1R.png"
 #a1 = "files/a/pic1L.png"
 #a2 = "files/a/pic1R.png"
 folder1 = "files/L"
 folder2 = "files/R"
 
-CONST = 74 #TODO:a const what?
-
-'''
-objpoints = []
-objp = np.zeros((9*6, 3), np.float32)
-objp[:, :2] = np.mgrid[0:9, 0:6].T.reshape(-1, 2)
-objpoints.append(objp*CONST)
-
-gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-img_shape = gray.shape[::-1]
-imgpoints = []
-ret_img, corners_img = cv.findChessboardCorners(gray, (9, 6), None)
-imgpoints.append(corners_img)
-ret,rv,tv = cv.solvePnP(objp,np.array(corners_img),inp,None)
-cv.Rodrigues(rv)[0],tv
-'''
+SQURESIZE = 74
+GREEN = (0,255,0)
 
 def innerCalib(folder):     #run once
     objpoints = []
@@ -36,7 +26,7 @@ def innerCalib(folder):     #run once
         #print(  filename )
         #print(  folder+"/"+filename )
         img = cv.imread(folder+"/"+filename)
-        objpoints.append(objp*CONST)
+        objpoints.append(objp*SQURESIZE)
         gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
         img_shape = gray.shape[::-1]
         ret_img, corners_img = cv.findChessboardCorners(gray, (9, 6), None)
@@ -45,83 +35,93 @@ def innerCalib(folder):     #run once
     print(CMat)
     return CMat
 
-def PnP(impath,arr):
-    objpoints = []
+
+def chessboard_points(impath):
     objp = np.zeros((9*6, 3), np.float32)
     objp[:, :2] = np.mgrid[0:9, 0:6].T.reshape(-1, 2)
-    objp *= CONST
-    objpoints.append(objp*CONST)
+    objp *= SQURESIZE
 
     img = cv.imread(impath)
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-    imgpoints = []
-    ret_img, corners_img = cv.findChessboardCorners(gray, (9, 6), None)
-    imgpoints.append(corners_img)
-    ret,rv,tv = cv.solvePnP(objp,np.array(corners_img),arr,None)
+    ret_img, corners_pxls = cv.findChessboardCorners(gray, (9, 6), None)
+
+    return objp, np.array(corners_pxls)
+
+def PnP(real_points,screen_points,arr):
+    ret,rv,tv = cv.solvePnP(real_points,screen_points,arr,None)
     print("rt \n", cv.Rodrigues(rv)[0],tv)
     return cv.Rodrigues(rv)[0],tv
 
-def externalCalib(proj1,proj2,points1,points2):
-    pts4D = cv.triangulatePoints(proj1, proj2, points1,points2)
+def externalCalib(projMats,points):
+    #import pdb; pdb.set_trace()
+    pts4D = cv.triangulatePoints(projMats[0], projMats[1], np.array(points[0]),np.array(points[1]))
     pts3D = np.transpose(pts4D).tolist()
-    for i,point in enumerate(pts3D):
-        pts3D[i] = [point[0]/point[3],point[1]/point[3],point[2]/point[3]]
+    print ("AAA",pts4D.shape)
+    for i in range(len(pts3D)):
+        pts3D[i] = [point/pts3D[i][3] for point in pts3D[i][:3]]
 
     for point in pts3D:
         print(point)
     print("done")
     return pts3D
 
+def extract_projection_matrix(arr , path):
+    rp, sp = chessboard_points(path)
+    rv, tv = PnP(rp,sp, arr)
+    proj = np.dot(arr, np.concatenate((rv, tv), axis=1))
+    return proj
 
-
-
-
-GREEN = (0,255,0)
-Extracted_Calibration = namedtuple(
-    "ExtractedCalibration", ['proj', 'points'])  # TODO: rename
+def draw_numbered_points(im, points):
+    viz_frame = im.copy()
+    print("ZAM", viz_frame.shape)
+    for i,point in enumerate(points):
+        point = np.array(point).flatten()
+        cv.circle(viz_frame, tuple(
+            map(int, point.tolist())), 5, GREEN, -1)
+        #print ("point", point)
+        cv.putText(viz_frame,str(i),tuple(int(i) for i in point.flatten()),cv.FONT_HERSHEY_SIMPLEX,0.6,(255,255,255))
+        #cv.putText(viz_frame,'OpenCV',(10,500), cv.FONT_HERSHEY_SIMPLEX, 4,(255,255,255),2,cv.LINE_AA)
+    return viz_frame
 
 def main():
     #innerCalib(folder1)
     #innerCalib(folder2)
     print("a")
 
-    def extract_calibration(arr : np.ndarray, path:str) -> Extracted_Calibration: #TODO: rename
-        rv, tv = PnP(path, arr)
-        proj = np.dot(arr, np.concatenate((rv, tv), axis=1))
-        im = cv.imread(path)
-        gray = cv.cvtColor(im, cv.COLOR_BGR2GRAY)
-        _, points = cv.findChessboardCorners(gray, (9, 6), None)
-        magic_indices = [0, 1, 8, 45, -2, -1]  # TODO: rename
-        points = np.array([points[i] for i in magic_indices])
-        draw_calib(im, points)
-        return Extracted_Calibration(proj, points)
-
-    def draw_calib(im:np.ndarray, points)->np.ndarray:
-        viz_frame = im.copy()
-        for point in points:
-            cv.circle(viz_frame, tuple(
-                map(int, point.tolist()[0])), 5, GREEN, -1)
-        return viz_frame
 
 
-    arr1 = np.array([[438.40566405, 0. ,295.56570293],
+    inner_calib1 = np.array([[438.40566405, 0. ,295.56570293],
                      [0. ,443.89587156, 187.76492822],
                      [0., 0., 1.]])
-    arr2 = np.array([[447.04221712, 0., 341.00865224],
+    inner_calib2 = np.array([[447.04221712, 0., 341.00865224],
                      [0., 448.39171467, 256.63590166],
                      [0., 0., 1.]])
 
-    arr1 = np.array([[479, 0, 303], [0, 383, 217], [0, 0, 1]])
-    arr2 = np.array([[479, 0, 338], [0, 481, 234], [0, 0, 1]])  # TODO: names
-    arrays = [arr1, arr2]
+    inner_calib1 = np.array([[479, 0, 303], [0, 383, 217], [0, 0, 1]])
+    inner_calib2 = np.array([[479, 0, 338], [0, 481, 234], [0, 0, 1]])  # Inner calibrations
+
+    inner_calibs = [inner_calib1, inner_calib2]
     paths = [path1, path2]
-    calibrations = [extract_calibration(arr,path) for arr,path in zip(arrays,paths)]
+    images = [cv.imread(path,0) for path in paths]
+    projections = [extract_projection_matrix(arr,path) for arr,path in zip(inner_calibs,paths)]
+    print "Type  ", cv.goodFeaturesToTrack(cv.imread(path1,0),**FEATURE_PARAMS)
+    print "Type2 ", chessboard_points(path1)[1]
+    good_features = [cv.goodFeaturesToTrack(image,**FEATURE_PARAMS) for image in images]
+    ch_points = [chessboard_points(path)[1] for path in paths]
+    tri_points = [[frame[i] for i in [0, 1, 8, 45, -2, -1]] for frame in ch_points] #interesting points in every frame
+    temp = [good_features[0][8], good_features[0][9], good_features[0][11]] #not good looking code TODO
+    tri_points = [temp,good_features[1][9:12]] #interesting points in every frame
+    #tri_points = good_features
 
-    cv.imshow("1", draw_calib(arrays[0], calibrations[0].points))
-    cv.imshow("2", draw_calib(arrays[1], calibrations[1].points))
+    cv.imshow("1", draw_numbered_points(images[0], tri_points[0]))
+    cv.imshow("2", draw_numbered_points(images[1], tri_points[1]))
 
-    #
-    print(externalCalib(calibrations[0].proj, calibrations[1].proj, np.array(calibrations[0].point), np.array(calibrations[0].point))))
+    print("maz", externalCalib(projections,tri_points))
+    #real dist:
+        #pt 0 x:-3 y: 26, z: 0
+        #pt 1 x:26 y: 10, z: 0
+        #pt 2 x:84 y: 72, z: 52
+
 
     if cv.waitKey(0) & 0xFF == ord('q'):
         pass
