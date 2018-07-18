@@ -9,7 +9,7 @@ path2 = "files/R/pic6.png"
 folder1 = "files/L"
 folder2 = "files/R"
 
-CONST = 74 #TODO: const what?
+CONST = 74 #TODO:a const what?
 
 '''
 objpoints = []
@@ -103,7 +103,7 @@ def main():
                 map(int, point.tolist()[0])), 5, GREEN, -1)
         return viz_frame
 
-        
+
     arr1 = np.array([[438.40566405, 0. ,295.56570293],
                      [0. ,443.89587156, 187.76492822],
                      [0., 0., 1.]])
@@ -116,7 +116,7 @@ def main():
     arrays = [arr1, arr2]
     paths = [path1, path2]
     calibrations = [extract_calibration(arr,path) for arr,path in zip(arrays,paths)]
-    
+
     cv.imshow("1", draw_calib(arrays[0], calibrations[0].points))
     cv.imshow("2", draw_calib(arrays[1], calibrations[1].points))
 
