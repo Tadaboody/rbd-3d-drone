@@ -43,7 +43,6 @@ def innerCalib(folder):     #run once
 
 def chessboard_points(impath):
     # Real cooridinates of the chessboard (after assuming it as the origin)
-    objp = create_objp()
     gray = cv.imread(impath,0)
     # gray = cv.flip(gray,1) # Flip around y axis
     # cv.imshow("flipped",gray)
@@ -51,7 +50,7 @@ def chessboard_points(impath):
 
     corners_pxls = np.reshape(corners_pxls,(BOARD_SIZE[0]*BOARD_SIZE[1],2))
 
-    return objp, np.array(corners_pxls)
+    return np.array(corners_pxls)
 
 def create_objp():
     objp = np.zeros((BOARD_SIZE[0]*BOARD_SIZE[1], 3), np.float32)
@@ -66,6 +65,50 @@ def PnP(real_points,screen_points,inner_calibration):
     rv = cv.Rodrigues(rv)[0]
     return rv,tv
 
+def add_one_column(li):
+    def new_point(point):
+        return point[0], point[1], 1
+    return np.array([new_point(point) for point in li])
+
+def ib():
+    used_path = path2
+    num_camera = 1
+    inner_calibration = load_inner_calib()[num_camera]
+    objp = add_one_column(create_objp())
+    proj = extract_projection_matrix(inner_calibration,used_path )
+    n_3 = proj @ np.array(objp).T
+    def de_hom(point):
+        return point[:2] / point[2]
+    n_3 = n_3.T
+    n_3 = [de_hom(point) for point in n_3] 
+    cv.imshow("show",draw_numbered_points(cv.imread(used_path),n_3))
+    cv.imshow("real", draw_numbered_points(cv.imread(used_path),
+                                           chessboard_points(used_path)[:51]))
+    r,t = PnP(create_objp(),chessboard_points(used_path),inner_calibration)
+    r2,t2 = PnP(create_objp(),chessboard_points(path1),load_inner_calib()[0])
+
+    print(np.linalg.norm(t-t2))
+    if cv.waitKey(0) & 0xFF == ord('q'):
+        pass
+    cv.destroyAllWindows()
+
+def ib_boogaloo():
+    # inv = np.linalg.inv
+    inner_calibration1,inner_calibration2 = load_inner_calib()
+    # path2 = path1
+    # inner_calibration2 = inner_calibration1
+
+    r1,t1 = PnP(create_objp(),chessboard_points(path1),inner_calibration1)
+    r2,t2 = PnP(create_objp(),chessboard_points(path2),inner_calibration2)
+    world_points = create_objp()
+    chess_points1 = chessboard_points(path1)
+    chess_points2 = chessboard_points(path2)
+    # res = ( r.T @ add_one_column(chessboard_points(path)) ).T @ inv(inner_calibration) - r.T @ t
+    locs = {key: val.tolist() for key, val in locals().items()}
+    with open("locals.json",'w') as fp:
+        json.dump(locs,fp)
+        
+
 def externalCalib(projMats,points):
     pts4D = cv.triangulatePoints(projMats[0], projMats[1], np.array(points[0]),np.array(points[1]))
     pts3D = np.transpose(pts4D).tolist()
@@ -78,10 +121,11 @@ def externalCalib(projMats,points):
     print("done")
     return pts3D
 
-def extract_projection_matrix(arr , path):
-    rp, sp = chessboard_points(path)
-    rv, tv = PnP(rp,sp, arr)
-    proj = np.dot(arr, np.concatenate((rv, tv), axis=1))
+def extract_projection_matrix(inner_calib , path):
+    sp = chessboard_points(path)
+    rp = create_objp()
+    rv, tv = PnP(rp,sp, inner_calib)
+    proj = np.dot(inner_calib, np.concatenate((rv, tv), axis=1))
     return proj
 
 def draw_numbered_points(im, points):
@@ -102,7 +146,7 @@ def new_main():
     paths = [path1, path2]
     images = [cv.imread(path,0) for path in paths]
 
-    corners = [chessboard_points(path)[1] for path in paths]
+    corners = [chessboard_points(path) for path in paths]
     pnps = [PnP(create_objp(), corner, inner_calib)
             for corner, inner_calib in zip(corners, inner_calibs)]
     
@@ -110,13 +154,12 @@ def new_main():
     rv2 = pnps[1][0]
     tv1 = pnps[0][1]
     tv2 = pnps[1][1]
-
-    print ("ib", np.matmul(rv1,tv1)-np.matmul(rv2,tv2))
+    ib = np.matmul(rv1,tv1)-np.matmul(rv2,tv2) 
+    print("ib", np.linalg.norm(ib))
+    return
 
 
 def main():
-    new_main()
-    return
 
 
     inner_calib1, inner_calib2 = load_inner_calib()
@@ -127,21 +170,33 @@ def main():
 
 
     projections = [extract_projection_matrix(arr,path) for arr,path in zip(inner_calibs,paths)]
-    PnPs = [PnP(*chessboard_points(path),inner_calib) for path,inner_calib in zip(paths,inner_calibs)]
+    PnPs = [PnP(create_objp(),chessboard_points(path),inner_calib) for path,inner_calib in zip(paths,inner_calibs)]
     # print "Type  ", cv.goodFeaturesToTrack(cv.imread(path1,0),**FEATURE_PARAMS)
     # print "Type2 ", chessboard_points(path1)[1]
+    rv1 = PnPs[0][0]
+    rv2 = PnPs[1][0]
+    tv1 = PnPs[0][1]
+    tv2 = PnPs[1][1]
+    wp = create_objp()
     print("IB", np.matmul(PnPs[0][0], PnPs[0][1]) -
           np.matmul(PnPs[1][0], PnPs[1][1]))
+    print("IBNORM", np.linalg.norm(rv1 @ tv1 - rv2 @ tv2))
     good_features = [cv.goodFeaturesToTrack(image,**FEATURE_PARAMS) for image in images]
-    ch_points = [chessboard_points(path)[1] for path in paths]
+    ch_points = [chessboard_points(path) for path in paths]
     tri_points = [[frame[i] for i in [0, 1, 8, 45, -2, -1]] for frame in ch_points] #interesting points in every frame
     temp = [good_features[0][8], good_features[0][9], good_features[0][11]] #not good looking code TODO
     # tri_points = [temp,good_features[1][9:12]] #interesting points in every frame
     #tri_points = good_features
 
     cv.imshow("1", draw_numbered_points(images[0], tri_points[0]))
-    cv.imshow("2", draw_numbered_points(images[1], tri_points[1]))
-
+    # cv.imshow("2", draw_numbered_points(images[1], tri_points[1]))
+    def translate_point(point):
+        point[0] += 270
+        point[1] += 180
+        return point[:2]
+    moved_objp = np.array([translate_point(point) for point in create_objp()])
+    cv.imshow("1", draw_numbered_points(images[0], tri_points[0]))
+    vs_img = cv.imshow("world",draw_numbered_points(images[0],moved_objp))
     # print("maz", externalCalib(projections,tri_points))
     #real dist:
         #pt 0 x:-3 y: 26, z: 0
@@ -175,4 +230,4 @@ def load_inner_calib():
     return inner_calib1, inner_calib2
 
 if __name__ == "__main__":
-    main()
+    ib_boogaloo()
