@@ -9,11 +9,12 @@ FEATURE_PARAMS = dict(  maxCorners = 250,
                         qualityLevel = 0.2,
                         minDistance = 50,
                         blockSize = 7 )
-path1 = "tic1L.png"
+path1 = "pic1L.png"
 path2 = "pic1R.png"
 BOARD_SIZE = (9,6)
-path1 = path2 = "pure_board.jpg"
-BOARD_SIZE = (7,7)
+# path1 = path2 = "pic1R.png"
+# BOARD_SIZE = (7,7)
+# BOARD_SIZE = (9,6)
 #a1 = "files/a/pic1L.png"
 #a2 = "files/a/pic1R.png"
 folder1 = "files/L"
@@ -26,8 +27,7 @@ def innerCalib(folder):     #run once
     objpoints = []
     imgpoints = []
 
-    objp = np.zeros((BOARD_SIZE[0]*BOARD_SIZE[1], 3), np.float32)
-    objp[:, :2] = np.mgrid[0:BOARD_SIZE[0], 0:BOARD_SIZE[1]].T.reshape(-1, 2)
+    objp = create_objp()
     for filename in os.listdir(folder):
         #print(  filename )
         #print(  folder+"/"+filename )
@@ -43,20 +43,25 @@ def innerCalib(folder):     #run once
 
 def chessboard_points(impath):
     # Real cooridinates of the chessboard (after assuming it as the origin)
-    objp = np.zeros((BOARD_SIZE[0]*BOARD_SIZE[1], 3), np.float32)
-    objp[:, :2] = np.mgrid[0:BOARD_SIZE[0], 0:BOARD_SIZE[1]].T.reshape(-1, 2)
-    objp *= SQURESIZE
-
-    img = cv.imread(impath)
-    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    objp = create_objp()
+    gray = cv.imread(impath,0)
+    # gray = cv.flip(gray,1) # Flip around y axis
+    # cv.imshow("flipped",gray)
     ret_img, corners_pxls = cv.findChessboardCorners(gray, BOARD_SIZE, None)
 
     corners_pxls = np.reshape(corners_pxls,(BOARD_SIZE[0]*BOARD_SIZE[1],2))
 
     return objp, np.array(corners_pxls)
 
-def PnP(real_points,screen_points,arr):
-    ret,rv,tv = cv.solvePnP(real_points,screen_points,arr,None)
+def create_objp():
+    objp = np.zeros((BOARD_SIZE[0]*BOARD_SIZE[1], 3), np.float32)
+    objp[:, :2] = np.mgrid[0:BOARD_SIZE[0], 0:BOARD_SIZE[1]].T.reshape(-1, 2)
+    objp *= SQURESIZE
+    return objp
+
+def PnP(real_points,screen_points,inner_calibration):
+    ret, rv, tv = cv.solvePnP(
+        real_points, screen_points, inner_calibration, None)
     print("rt \n", cv.Rodrigues(rv)[0],tv)
     rv = cv.Rodrigues(rv)[0]
     return rv,tv
@@ -91,13 +96,36 @@ def draw_numbered_points(im, points):
         #cv.putText(viz_frame,'OpenCV',(10,500), cv.FONT_HERSHEY_SIMPLEX, 4,(255,255,255),2,cv.LINE_AA)
     return viz_frame
 
-def main():
+def new_main():
     inner_calib1, inner_calib2 = load_inner_calib()
-
-
     inner_calibs = [inner_calib1, inner_calib2]
     paths = [path1, path2]
     images = [cv.imread(path,0) for path in paths]
+
+    corners = [chessboard_points(path)[1] for path in paths]
+    pnps = [PnP(create_objp(), corner, inner_calib)
+            for corner, inner_calib in zip(corners, inner_calibs)]
+    
+    rv1 = pnps[0][0]
+    rv2 = pnps[1][0]
+    tv1 = pnps[0][1]
+    tv2 = pnps[1][1]
+
+    print ("ib", np.matmul(rv1,tv1)-np.matmul(rv2,tv2))
+
+
+def main():
+    new_main()
+    return
+
+
+    inner_calib1, inner_calib2 = load_inner_calib()
+    inner_calibs = [inner_calib1, inner_calib2]
+    paths = [path1, path2]
+    images = [cv.imread(path,0) for path in paths]
+
+
+
     projections = [extract_projection_matrix(arr,path) for arr,path in zip(inner_calibs,paths)]
     PnPs = [PnP(*chessboard_points(path),inner_calib) for path,inner_calib in zip(paths,inner_calibs)]
     # print "Type  ", cv.goodFeaturesToTrack(cv.imread(path1,0),**FEATURE_PARAMS)
@@ -114,7 +142,7 @@ def main():
     cv.imshow("1", draw_numbered_points(images[0], tri_points[0]))
     cv.imshow("2", draw_numbered_points(images[1], tri_points[1]))
 
-    print("maz", externalCalib(projections,tri_points))
+    # print("maz", externalCalib(projections,tri_points))
     #real dist:
         #pt 0 x:-3 y: 26, z: 0
         #pt 1 x:26 y: 10, z: 0
