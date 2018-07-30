@@ -1,7 +1,10 @@
-import cv2 as cv
-import numpy as np
+import json
 import os
 from collections import namedtuple
+
+import cv2 as cv
+import numpy as np
+
 FEATURE_PARAMS = dict(  maxCorners = 250,
                         qualityLevel = 0.2,
                         minDistance = 50,
@@ -53,7 +56,6 @@ def PnP(real_points,screen_points,arr):
     return cv.Rodrigues(rv)[0],tv
 
 def externalCalib(projMats,points):
-    #import pdb; pdb.set_trace()
     pts4D = cv.triangulatePoints(projMats[0], projMats[1], np.array(points[0]),np.array(points[1]))
     pts3D = np.transpose(pts4D).tolist()
     print ("AAA",pts4D.shape)
@@ -84,28 +86,15 @@ def draw_numbered_points(im, points):
     return viz_frame
 
 def main():
-    #innerCalib(folder1)
-    #innerCalib(folder2)
-    print("a")
+    inner_calib1, inner_calib2 = load_inner_calib()
 
-
-
-    inner_calib1 = np.array([[438.40566405, 0. ,295.56570293],
-                     [0. ,443.89587156, 187.76492822],
-                     [0., 0., 1.]])
-    inner_calib2 = np.array([[447.04221712, 0., 341.00865224],
-                     [0., 448.39171467, 256.63590166],
-                     [0., 0., 1.]])
-
-    inner_calib1 = np.array([[479, 0, 303], [0, 383, 217], [0, 0, 1]])
-    inner_calib2 = np.array([[479, 0, 338], [0, 481, 234], [0, 0, 1]])  # Inner calibrations
 
     inner_calibs = [inner_calib1, inner_calib2]
     paths = [path1, path2]
     images = [cv.imread(path,0) for path in paths]
     projections = [extract_projection_matrix(arr,path) for arr,path in zip(inner_calibs,paths)]
-    print "Type  ", cv.goodFeaturesToTrack(cv.imread(path1,0),**FEATURE_PARAMS)
-    print "Type2 ", chessboard_points(path1)[1]
+    # print "Type  ", cv.goodFeaturesToTrack(cv.imread(path1,0),**FEATURE_PARAMS)
+    # print "Type2 ", chessboard_points(path1)[1]
     good_features = [cv.goodFeaturesToTrack(image,**FEATURE_PARAMS) for image in images]
     ch_points = [chessboard_points(path)[1] for path in paths]
     tri_points = [[frame[i] for i in [0, 1, 8, 45, -2, -1]] for frame in ch_points] #interesting points in every frame
@@ -126,6 +115,27 @@ def main():
     if cv.waitKey(0) & 0xFF == ord('q'):
         pass
     cv.destroyAllWindows()
+
+def load_inner_calib():
+    JSON_PATH = "inner_calibrations.json"
+    try:
+        with open(JSON_PATH) as fp:
+            inner_calib1, inner_calib2 = np.array(json.load(fp))
+    except FileNotFoundError:
+        inner_calib = [innerCalib(folder1), innerCalib(folder2)]
+        with open(JSON_PATH, 'w') as fp:
+            json.dump(inner_calib, fp)
+    # inner_calib1 = np.array([[438.40566405, 0., 295.56570293],
+    #                          [0., 443.89587156, 187.76492822],
+    #                          [0., 0., 1.]])
+    # inner_calib2 = np.array([[447.04221712, 0., 341.00865224],
+    #                          [0., 448.39171467, 256.63590166],
+    #                          [0., 0., 1.]])
+
+    # inner_calib1 = np.array([[479, 0, 303], [0, 383, 217], [0, 0, 1]])
+    # inner_calib2 = np.array([[479, 0, 338], [0, 481, 234], [0, 0, 1]])  # Inner calibrations
+
+    return inner_calib1, inner_calib2
 
 if __name__ == "__main__":
     main()
