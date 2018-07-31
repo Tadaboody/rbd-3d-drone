@@ -9,8 +9,8 @@ FEATURE_PARAMS = dict(  maxCorners = 250,
                         qualityLevel = 0.2,
                         minDistance = 50,
                         blockSize = 7 )
-path1 = "pic1L.png"
-path2 = "pic1R.png"
+path1 = "pic18L.png"
+path2 = "pic18R.png"
 BOARD_SIZE = (9,6)
 # path1 = path2 = "pic1R.png"
 # BOARD_SIZE = (7,7)
@@ -76,11 +76,11 @@ def ib():
     inner_calibration = load_inner_calib()[num_camera]
     objp = add_one_column(create_objp())
     proj = extract_projection_matrix(inner_calibration,used_path )
-    n_3 = proj @ np.array(objp).T
+    #n_3 = proj @ np.array(objp).T
     def de_hom(point):
         return point[:2] / point[2]
     n_3 = n_3.T
-    n_3 = [de_hom(point) for point in n_3] 
+    n_3 = [de_hom(point) for point in n_3]
     cv.imshow("show",draw_numbered_points(cv.imread(used_path),n_3))
     cv.imshow("real", draw_numbered_points(cv.imread(used_path),
                                            chessboard_points(used_path)[:51]))
@@ -91,6 +91,17 @@ def ib():
     if cv.waitKey(0) & 0xFF == ord('q'):
         pass
     cv.destroyAllWindows()
+
+def ib2():
+    inner_calibration1,inner_calibration2 = load_inner_calib()
+
+    r1,t1 = PnP(create_objp(),chessboard_points(path1),inner_calibration1)
+    r2,t2 = PnP(create_objp(),chessboard_points(path2),inner_calibration2)
+    rt1 = np.matmul(r1.T,t1)
+    rt2 = np.matmul(r2.T,t2)
+    norm = np.linalg.norm(rt1+rt2)
+    print (norm)
+
 
 def ib_boogaloo():
     # inv = np.linalg.inv
@@ -107,7 +118,7 @@ def ib_boogaloo():
     locs = {key: val.tolist() for key, val in locals().items()}
     with open("locals.json",'w') as fp:
         json.dump(locs,fp)
-        
+
 
 def externalCalib(projMats,points):
     pts4D = cv.triangulatePoints(projMats[0], projMats[1], np.array(points[0]),np.array(points[1]))
@@ -149,12 +160,12 @@ def new_main():
     corners = [chessboard_points(path) for path in paths]
     pnps = [PnP(create_objp(), corner, inner_calib)
             for corner, inner_calib in zip(corners, inner_calibs)]
-    
+
     rv1 = pnps[0][0]
     rv2 = pnps[1][0]
     tv1 = pnps[0][1]
     tv2 = pnps[1][1]
-    ib = np.matmul(rv1,tv1)-np.matmul(rv2,tv2) 
+    ib = np.matmul(rv1,tv1)-np.matmul(rv2,tv2)
     print("ib", np.linalg.norm(ib))
     return
 
@@ -180,7 +191,7 @@ def main():
     wp = create_objp()
     print("IB", np.matmul(PnPs[0][0], PnPs[0][1]) -
           np.matmul(PnPs[1][0], PnPs[1][1]))
-    print("IBNORM", np.linalg.norm(rv1 @ tv1 - rv2 @ tv2))
+    #print("IBNORM", np.linalg.norm(rv1 @ tv1 - rv2 @ tv2))
     good_features = [cv.goodFeaturesToTrack(image,**FEATURE_PARAMS) for image in images]
     ch_points = [chessboard_points(path) for path in paths]
     tri_points = [[frame[i] for i in [0, 1, 8, 45, -2, -1]] for frame in ch_points] #interesting points in every frame
@@ -230,4 +241,4 @@ def load_inner_calib():
     return inner_calib1, inner_calib2
 
 if __name__ == "__main__":
-    ib_boogaloo()
+    ib2()
