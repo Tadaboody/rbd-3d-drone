@@ -96,15 +96,16 @@ def ib(num_camera):
 
     #print "maz", n_3
     cv.imshow("show",draw_numbered_points(cv.imread(used_path),n_3))
-    cv.imshow("real", draw_numbered_points(cv.imread(used_path),
-                                           chessboard_points(used_path)[:51]))
+    #cv.imshow("real", draw_numbered_points(cv.imread(used_path),
+    #                                       chessboard_points(used_path)[:51]))
 
     print("error ", np.linalg.norm(n_3-chessboard_points(used_path)))
 
     if cv.waitKey(0) & 0xFF == ord('q'):
         pass
     cv.destroyAllWindows()
-    return PnP(create_objp(),chessboard_points(used_path),inner_calibration)
+    return proj
+    #return PnP(create_objp(),chessboard_points(used_path),inner_calibration)
 
 def ib2():
     inner_calibration1,inner_calibration2 = load_inner_calib()
@@ -133,7 +134,11 @@ def ib_boogaloo():
         json.dump(locs,fp)
 
 def externalCalib(projMats,points):
-    pts4D = cv.triangulatePoints(projMats[0], projMats[1], np.array(points[0]),np.array(points[1]))
+    #p0 = np.array([p.tolist()[0] for p in points[0]])
+    #print (p0)
+    #p1 = np.array([p.tolist()[0] for p in points[1]]).astype(np.float32)
+    #points = [p0,p1]
+    pts4D = cv.triangulatePoints(projMats[0], projMats[1], np.array(points[0]).T, np.array(points[1]).T)
     pts3D = np.transpose(pts4D).tolist()
     print ("AAA",pts4D.shape)
     for i in range(len(pts3D)):
@@ -205,6 +210,8 @@ def main():
     #print("IBNORM", np.linalg.norm(rv1 @ tv1 - rv2 @ tv2))
     good_features = [cv.goodFeaturesToTrack(image,**FEATURE_PARAMS) for image in images]
     ch_points = [chessboard_points(path) for path in paths]
+    temp = [good_features[0][8], good_features[0][9], good_features[0][11]] #not good looking code TODO
+    ch_points = [chessboard_points(path) for path in paths]
     tri_points = [[frame[i] for i in [0, 1, 8, 45, -2, -1]] for frame in ch_points] #interesting points in every frame
     temp = [good_features[0][8], good_features[0][9], good_features[0][11]] #not good looking code TODO
     # tri_points = [temp,good_features[1][9:12]] #interesting points in every frame
@@ -253,12 +260,29 @@ def load_inner_calib():
     return inner_calib1, inner_calib2
 if __name__ == "__main__":
 
-    r, t   = ib(0)
-    t[0] = -t[0]
-    t[1] = -t[1]
-    r2, t2 = ib(1)
-    print("r\n", r,"\nt\n",t)
-    print ("rt ", r.T@t)
-    print("r2\n", r2,"\nt2\n",t2)
-    print ("rt2 ", r2.T@t2)
-    print("norm ", np.linalg.norm(t-t2))
+    #r, t   = ib(0)
+    #t[0] = -t[0]
+    #t[1] = -t[1]
+    #r2, t2 = ib(1)
+    #print("r\n", r,"\nt\n",t)
+    #print ("rt ", r.T@t)
+    #print("r2\n", r2,"\nt2\n",t2)
+    #print ("rt2 ", r2.T@t2)
+    #print("norm ", np.linalg.norm(t-t2))
+    projs = [ib(0),ib(1)]
+    paths = [path1,path2]
+    images = [cv.imread(path,0) for path in paths]
+    points = [chessboard_points(paths[0]),chessboard_points(paths[1])]
+
+    good_features = [cv.goodFeaturesToTrack(image,**FEATURE_PARAMS) for image in images]
+    #good_features = [f]
+    ch_points = [chessboard_points(path) for path in paths]
+    temp = [good_features[0][9][0], good_features[0][10][0], good_features[0][11][0],ch_points[0][0],ch_points[0][-1]] #not good looking code TODO
+    temp2 = [good_features[1][8][0], good_features[1][9][0], good_features[1][11][0],ch_points[1][0],ch_points[1][-1]] #not good looking code TODO
+    temps = [temp,temp2]
+    print ("maz,", externalCalib(projs,temps))
+    cv.imshow("show",draw_numbered_points(images[0],temps[0]))
+    cv.imshow("real",draw_numbered_points(images[1],temps[1]))
+    if cv.waitKey(0) & 0xFF == ord('q'):
+        pass
+    cv.destroyAllWindows()
