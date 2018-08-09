@@ -1,3 +1,6 @@
 [submodule "Model-Drone"]
 	path = Model-Drone
 	url = https://github.com/Royz2123/Model-Drone.git
+[submodule "Python-Drone"]
+	path = Python-Drone
+	url = github:Royz2123/Python-Drone
