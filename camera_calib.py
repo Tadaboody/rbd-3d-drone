@@ -1,16 +1,17 @@
 import json
 import os
-from collections import namedtuple
 
 import cv2 as cv
 import numpy as np
+
+from TrackerServer import triangulate
 
 FEATURE_PARAMS = dict(  maxCorners = 250,
                         qualityLevel = 0.2,
                         minDistance = 50,
                         blockSize = 7 )
-path1 = "pic1R.png"
-path2 = "pic1L.png"
+path1 = "pic21R.png"
+path2 = "pic21L.png"
 BOARD_SIZE = (9,6)
 # path1 = path2 = "pic1R.png"
 # BOARD_SIZE = (7,7)
@@ -22,6 +23,26 @@ folder2 = "files/R"
 
 SQURESIZE = 51
 GREEN = (0,255,0)
+
+def de_hom(point):
+    return np.array(point[:-1]) / point[-1]
+def new_func(inner,disCoff):
+    rv,tv = ib(0)
+    rv2,tv2 = ib(1)
+    rv-=rv2
+    tv-=tv2
+    _, _, p1, p2, _, _, _ = cv.stereoRectify(np.array(inner[0]), np.array(inner[1]), np.array(disCoff[0]),
+                     np.array(disCoff[1]), (640, 480), rv, tv)
+    print("Shura beinehem")
+    print(p1)
+    print(p2)
+    
+def hom(points):
+    def hom_pt(pt):
+        pt = list(pt) + [1]
+        return pt
+    return np.array([hom_pt(pt) for pt in points])
+
 
 def innerCalib(folder):     #run once
     objpoints = []
@@ -35,7 +56,7 @@ def innerCalib(folder):     #run once
         objpoints.append(objp*SQURESIZE)
         gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
         img_shape = gray.shape[::-1]
-        ret_img, corners_img = cv.findChessboardCorners(gray, BOARD_SIZE, None)
+        _, corners_img = cv.findChessboardCorners(gray, BOARD_SIZE, None)
         imgpoints.append(corners_img)
     ret_calib, CMat, DistCoff, rv, tv = cv.calibrateCamera(objpoints,imgpoints,img_shape,None,None)
     print(CMat)
@@ -78,34 +99,29 @@ def add_one_column_4D(li):
 def ib(num_camera):
     paths = [path1,path2]
     used_path = paths[num_camera]
-    inner_calibs = [ [[460,0,340],[0,463,360],[0,0,1]],
-                     [[459,0,302],[0,462,200],[0,0,1]] ]
-    DistCoffs = [ [-0.4496, 0.2395, -0.0098, -0.0010],
-                   [-0.4237, 0.1677, 0.0115, -0.0002]]
+    inner_calibs,DistCoffs = load_inner_calib()
     inner_calibration = np.array(inner_calibs[num_camera])
     DistCoff = np.array(DistCoffs[num_camera])
     DistCoff = None
     objp = add_one_column_4D(create_objp())
     proj = extract_projection_matrix(inner_calibration,used_path, DistCoff )
-    n_3 = proj @ np.array(objp).T
+    # n_3 = proj @ np.array(objp).T
 
-    def de_hom(point):
-        return point[:2] / point[2]
-    n_3 = n_3.T
-    n_3 = [de_hom(point) for point in n_3]
+    # n_3 = n_3.T
+    # n_3 = [de_hom(point) for point in n_3]
 
     #print "maz", n_3
-    cv.imshow("show",draw_numbered_points(cv.imread(used_path),n_3))
+    # cv.imshow("show",draw_numbered_points(cv.imread(used_path),n_3))
     #cv.imshow("real", draw_numbered_points(cv.imread(used_path),
     #                                       chessboard_points(used_path)[:51]))
 
-    print("error ", np.linalg.norm(n_3-chessboard_points(used_path)))
+    # print("error ", np.linalg.norm(n_3-chessboard_points(used_path)))
 
     if cv.waitKey(0) & 0xFF == ord('q'):
         pass
     cv.destroyAllWindows()
-    return proj
-    #return PnP(create_objp(),chessboard_points(used_path),inner_calibration)
+    # return proj
+    return PnP(create_objp(),chessboard_points(used_path),inner_calibration)
 
 def ib2():
     inner_calibration1,inner_calibration2 = load_inner_calib()
@@ -138,12 +154,9 @@ def externalCalib(projMats,points):
     #print (p0)
     #p1 = np.array([p.tolist()[0] for p in points[1]]).astype(np.float32)
     #points = [p0,p1]
+    projMats[0] = np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0]])
     pts4D = cv.triangulatePoints(projMats[0], projMats[1], np.array(points[0]).T, np.array(points[1]).T)
-    pts3D = np.transpose(pts4D).tolist()
-    print ("AAA",pts4D.shape)
-    for i in range(len(pts3D)):
-        pts3D[i] = [point/pts3D[i][3] for point in pts3D[i][:3]]
-
+    pts3D = [de_hom(point) for point in pts4D.T.tolist()]
     for point in pts3D:
         print(point)
     print("done")
@@ -217,15 +230,15 @@ def main():
     # tri_points = [temp,good_features[1][9:12]] #interesting points in every frame
     #tri_points = good_features
 
-    cv.imshow("1", draw_numbered_points(images[0], tri_points[0]))
+    # cv.imshow("1", draw_numbered_points(images[0], tri_points[0]))
     # cv.imshow("2", draw_numbered_points(images[1], tri_points[1]))
     def translate_point(point):
         point[0] += 270
         point[1] += 180
         return point[:2]
     moved_objp = np.array([translate_point(point) for point in create_objp()])
-    cv.imshow("1", draw_numbered_points(images[0], tri_points[0]))
-    vs_img = cv.imshow("world",draw_numbered_points(images[0],moved_objp))
+    # cv.imshow("1", draw_numbered_points(images[0], tri_points[0]))
+    # vs_img = cv.imshow("world",draw_numbered_points(images[0],moved_objp))
     # print("maz", externalCalib(projections,tri_points))
     #real dist:
         #pt 0 x:-3 y: 26, z: 0
@@ -238,38 +251,29 @@ def main():
     cv.destroyAllWindows()
 
 def load_inner_calib():
-
+    inner_calibs = [ [[460,0,340],[0,463,360],[0,0,1]],
+                     [[459,0,302],[0,462,200],[0,0,1]] ]
+    DistCoffs = [ [-0.4496, 0.2395, -0.0098, -0.0010],
+                   [-0.4237, 0.1677, 0.0115, -0.0002]]
+    return inner_calibs, DistCoffs
     JSON_PATH = "inner_calibrations.json"
     try:
-        with open(JSON_PATH) as fp:
-            inner_calib1, inner_calib2 = np.array(json.load(fp))
+        with open(JSON_PATH, encoding='utf-8') as fp:
+            st = fp.read().strip()
+            json_dict = json.loads(st)
+            inner_calibrations = json_dict['inner_calibrations']
+            distCoff = json_dict['distCoff']
     except FileNotFoundError:
-        inner_calib = [innerCalib(folder1), innerCalib(folder2)]
+        inner_calibrations,distCoff = zip(*[innerCalib(folder1), innerCalib(folder2)])
         with open(JSON_PATH, 'w') as fp:
-            json.dump(inner_calib, fp)
-    # inner_calib1 = np.array([[438.40566405, 0., 295.56570293],
-    #                          [0., 443.89587156, 187.76492822],
-    #                          [0., 0., 1.]])
-    # inner_calib2 = np.array([[447.04221712, 0., 341.00865224],
-    #                          [0., 448.39171467, 256.63590166],
-    #                          [0., 0., 1.]])
+            json.dump({'inner_calibrations': inner_calibrations,
+                       'distCoff': distCoff}, fp)
+    return inner_calibrations, distCoff
 
-    # inner_calib1 = np.array([[479, 0, 303], [0, 383, 217], [0, 0, 1]])
-    # inner_calib2 = np.array([[479, 0, 338], [0, 481, 234], [0, 0, 1]])  # Inner calibrations
-
-    return inner_calib1, inner_calib2
 if __name__ == "__main__":
-
     #r, t   = ib(0)
-    #t[0] = -t[0]
-    #t[1] = -t[1]
-    #r2, t2 = ib(1)
-    #print("r\n", r,"\nt\n",t)
-    #print ("rt ", r.T@t)
-    #print("r2\n", r2,"\nt2\n",t2)
-    #print ("rt2 ", r2.T@t2)
-    #print("norm ", np.linalg.norm(t-t2))
     projs = [ib(0),ib(1)]
+    rts, tvs = zip(*projs)
     paths = [path1,path2]
     images = [cv.imread(path,0) for path in paths]
     points = [chessboard_points(paths[0]),chessboard_points(paths[1])]
@@ -277,10 +281,12 @@ if __name__ == "__main__":
     good_features = [cv.goodFeaturesToTrack(image,**FEATURE_PARAMS) for image in images]
     #good_features = [f]
     ch_points = [chessboard_points(path) for path in paths]
-    temp = [good_features[0][9][0], good_features[0][10][0], good_features[0][11][0],ch_points[0][0],ch_points[0][-1]] #not good looking code TODO
-    temp2 = [good_features[1][8][0], good_features[1][9][0], good_features[1][11][0],ch_points[1][0],ch_points[1][-1]] #not good looking code TODO
+    temp = [ch_points[0][0],ch_points[0][-1],ch_points[0][11],ch_points[0][-11]] #not good looking code TODO
+    temp2 = [ch_points[1][0],ch_points[1][-1],ch_points[1][11],ch_points[1][-11]] #not good looking code TODO
     temps = [temp,temp2]
-    print ("maz,", externalCalib(projs,temps))
+    triangulated = list(triangulate(
+        temps[0], temps[1], load_inner_calib()[0], rts, tvs))
+    print("triangulated points",triangulated)
     cv.imshow("show",draw_numbered_points(images[0],temps[0]))
     cv.imshow("real",draw_numbered_points(images[1],temps[1]))
     if cv.waitKey(0) & 0xFF == ord('q'):

@@ -4,3 +4,6 @@
 [submodule "Python-Drone"]
 	path = Python-Drone
 	url = github:Royz2123/Python-Drone
+[submodule "triangulation"]
+	path = triangulation
+	url = git@github.com:alexflint/triangulation.git
