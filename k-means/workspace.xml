@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="bc7f4fb4-11a8-4c06-91ae-e4e8b2319b1b" name="Default" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/GoogleMapsKMeans$main.coverage" NAME="main Coverage Results" MODIFIED="1534172731141" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="set_of_lines.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/set_of_lines.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="68">
+              <caret line="8" column="37" selection-start-line="8" selection-start-column="37" selection-end-line="8" selection-end-column="37" />
+              <folding>
+                <element signature="n#!!doc" />
+                <element signature="e#330#341#0" expanded="true" />
+                <element signature="e#383#773#1" />
+                <element signature="e#4539#8749#0" />
+                <element signature="e#4539#4799#1" />
+                <element signature="e#8886#9269#1" />
+                <element signature="e#14148#14293#0" />
+                <element signature="e#14148#14253#1" />
+                <element signature="e#14442#14648#1" />
+                <element signature="e#15532#18643#0" />
+                <element signature="e#15532#15985#1" />
+                <element signature="e#18157#18235#0" />
+                <element signature="e#18812#20657#0" />
+                <element signature="e#18812#19411#1" />
+                <element signature="e#19772#20592#0" />
+                <element signature="e#20811#23600#0" />
+                <element signature="e#20811#21136#1" />
+                <element signature="e#23760#26392#0" />
+                <element signature="e#23760#24135#1" />
+                <element signature="e#26553#29633#0" />
+                <element signature="e#26553#26929#1" />
+                <element signature="e#28719#28790#0" />
+                <element signature="e#29776#30291#0" />
+                <element signature="e#29776#29962#1" />
+                <element signature="e#30440#31533#0" />
+                <element signature="e#30440#30695#1" />
+                <element signature="e#29474#30044#0" />
+                <element signature="e#31670#31747#1" />
+                <element signature="e#29598#29828#0" />
+                <element signature="e#32384#33213#0" />
+                <element signature="e#32384#32596#1" />
+                <element signature="e#31172#31697#0" />
+                <element signature="e#33368#33587#1" />
+                <element signature="e#34042#34454#0" />
+                <element signature="e#34042#34139#1" />
+                <element signature="e#34608#34776#0" />
+                <element signature="e#34608#34685#1" />
+                <element signature="e#34921#37013#0" />
+                <element signature="e#34921#35642#1" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="fromnumeric.py" pinned="false" current-in-tab="false">
+        <entry file="file://C:/IntelPython3/Lib/site-packages/numpy/core/fromnumeric.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="137">
+              <caret line="41" selection-start-line="41" selection-end-line="41" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="k_means_for_lines_experiments_final.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/k_means_for_lines_experiments_final.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="510">
+              <caret line="182" column="19" selection-start-line="182" selection-start-column="19" selection-end-line="182" selection-end-column="19" />
+              <folding>
+                <element signature="n#!!doc" />
+                <element signature="e#398#495#1" />
+                <element signature="e#795#1356#1" />
+                <element signature="e#2079#2641#0" />
+                <element signature="e#2116#2236#0" />
+                <element signature="e#2567#2641#0" />
+                <element signature="e#2864#3807#0" />
+                <element signature="e#2864#3144#1" />
+                <element signature="e#3528#3778#0" />
+                <element signature="e#3713#3778#0" />
+                <element signature="e#3964#5548#0" />
+                <element signature="e#3964#4055#1" />
+                <element signature="e#4764#5515#0" />
+                <element signature="e#5381#5515#0" />
+                <element signature="e#7714#9736#0" />
+                <element signature="e#7714#8435#1" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/main.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="68">
+              <caret line="4" column="49" selection-start-line="4" selection-start-column="49" selection-end-line="4" selection-end-column="49" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="set_of_points.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/set_of_points.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="119">
+              <caret line="20" selection-start-line="20" selection-end-line="20" />
+              <folding>
+                <element signature="n#!!doc" />
+                <element signature="e#383#673#1" />
+                <element signature="e#1294#1605#0" />
+                <element signature="e#2059#2822#0" />
+                <element signature="e#2059#2267#1" />
+                <element signature="e#2443#2822#0" />
+                <element signature="e#2944#3062#0" />
+                <element signature="e#2944#3021#1" />
+                <element signature="e#3208#3605#0" />
+                <element signature="e#3208#3395#1" />
+                <element signature="e#3727#4273#0" />
+                <element signature="e#3727#3826#1" />
+                <element signature="e#4405#4582#0" />
+                <element signature="e#4405#4485#1" />
+                <element signature="e#4716#5525#0" />
+                <element signature="e#4716#4901#1" />
+                <element signature="e#5161#5325#0" />
+                <element signature="e#5589#5928#0" />
+                <element signature="e#5589#5686#1" />
+                <element signature="e#6060#6712#0" />
+                <element signature="e#6060#6278#1" />
+                <element signature="e#6367#6489#0" />
+                <element signature="e#6436#6489#0" />
+                <element signature="e#6850#7047#0" />
+                <element signature="e#6850#6955#1" />
+                <element signature="e#7204#9252#0" />
+                <element signature="e#7204#7595#1" />
+                <element signature="e#9413#11961#0" />
+                <element signature="e#9413#9805#1" />
+                <element signature="e#12123#14739#0" />
+                <element signature="e#12123#12515#1" />
+                <element signature="e#14897#17316#0" />
+                <element signature="e#14897#15289#1" />
+                <element signature="e#17476#18714#0" />
+                <element signature="e#17476#17708#1" />
+                <element signature="e#18870#22033#0" />
+                <element signature="e#18870#19167#1" />
+                <element signature="e#22169#22648#0" />
+                <element signature="e#22169#22398#1" />
+                <element signature="e#22767#23282#0" />
+                <element signature="e#22767#23000#1" />
+                <element signature="e#23401#23689#0" />
+                <element signature="e#23401#23583#1" />
+                <element signature="e#23814#24237#0" />
+                <element signature="e#23814#24017#1" />
+                <element signature="e#24367#24663#0" />
+                <element signature="e#24367#24517#1" />
+                <element signature="e#24802#25243#0" />
+                <element signature="e#24802#25058#1" />
+                <element signature="e#25404#25940#0" />
+                <element signature="e#25404#25508#1" />
+                <element signature="e#25599#25699#0" />
+                <element signature="e#26080#26568#0" />
+                <element signature="e#26080#26300#1" />
+                <element signature="e#26697#29543#0" />
+                <element signature="e#26697#26905#1" />
+                <element signature="e#29696#31148#0" />
+                <element signature="e#29696#29856#1" />
+                <element signature="e#31219#31582#0" />
+                <element signature="e#31219#31296#1" />
+                <element signature="e#31472#31559#0" />
+                <element signature="e#31506#31559#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>good</find>
+      <find>goo</find>
+      <find>norma</find>
+    </findStrings>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/set_of_points.py" />
+        <option value="$PROJECT_DIR$/lines.csv" />
+        <option value="$PROJECT_DIR$/set_of_lines.py" />
+        <option value="$PROJECT_DIR$/main.py" />
+        <option value="$PROJECT_DIR$/k_means_for_lines_experiments_final.py" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="7">
+    <option name="x" value="485" />
+    <option name="y" value="10" />
+    <option name="width" value="1400" />
+    <option name="height" value="915" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="GoogleMapsKMeans" type="b2602c69:ProjectViewProjectNode" />
+              <item name="GoogleMapsKMeans" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="GoogleMapsKMeans" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.main" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="bc7f4fb4-11a8-4c06-91ae-e4e8b2319b1b" name="Default" comment="" />
+      <created>1534170319595</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1534170319595</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-7" y="-7" width="1550" height="838" extended-state="7" />
+    <layout>
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Python Console" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Terminal" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
+      <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
+      <window_info anchor="right" id="Database" />
+      <window_info anchor="right" id="SciView" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.3994528" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+      <option name="time" value="6" />
+    </breakpoint-manager>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/set_of_points.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="20" selection-start-line="20" selection-end-line="20" />
+          <folding>
+            <element signature="n#!!doc" />
+            <element signature="e#383#673#1" />
+            <element signature="e#1294#1605#0" />
+            <element signature="e#2059#2822#0" />
+            <element signature="e#2059#2267#1" />
+            <element signature="e#2443#2822#0" />
+            <element signature="e#2944#3062#0" />
+            <element signature="e#2944#3021#1" />
+            <element signature="e#3208#3605#0" />
+            <element signature="e#3208#3395#1" />
+            <element signature="e#3727#4273#0" />
+            <element signature="e#3727#3826#1" />
+            <element signature="e#4405#4582#0" />
+            <element signature="e#4405#4485#1" />
+            <element signature="e#4716#5525#0" />
+            <element signature="e#4716#4901#1" />
+            <element signature="e#5161#5325#0" />
+            <element signature="e#5589#5928#0" />
+            <element signature="e#5589#5686#1" />
+            <element signature="e#6060#6712#0" />
+            <element signature="e#6060#6278#1" />
+            <element signature="e#6367#6489#0" />
+            <element signature="e#6436#6489#0" />
+            <element signature="e#6850#7047#0" />
+            <element signature="e#6850#6955#1" />
+            <element signature="e#7204#9252#0" />
+            <element signature="e#7204#7595#1" />
+            <element signature="e#9413#11961#0" />
+            <element signature="e#9413#9805#1" />
+            <element signature="e#12123#14739#0" />
+            <element signature="e#12123#12515#1" />
+            <element signature="e#14897#17316#0" />
+            <element signature="e#14897#15289#1" />
+            <element signature="e#17476#18714#0" />
+            <element signature="e#17476#17708#1" />
+            <element signature="e#18870#22033#0" />
+            <element signature="e#18870#19167#1" />
+            <element signature="e#22169#22648#0" />
+            <element signature="e#22169#22398#1" />
+            <element signature="e#22767#23282#0" />
+            <element signature="e#22767#23000#1" />
+            <element signature="e#23401#23689#0" />
+            <element signature="e#23401#23583#1" />
+            <element signature="e#23814#24237#0" />
+            <element signature="e#23814#24017#1" />
+            <element signature="e#24367#24663#0" />
+            <element signature="e#24367#24517#1" />
+            <element signature="e#24802#25243#0" />
+            <element signature="e#24802#25058#1" />
+            <element signature="e#25404#25940#0" />
+            <element signature="e#25404#25508#1" />
+            <element signature="e#25599#25699#0" />
+            <element signature="e#26080#26568#0" />
+            <element signature="e#26080#26300#1" />
+            <element signature="e#26697#29543#0" />
+            <element signature="e#26697#26905#1" />
+            <element signature="e#29696#31148#0" />
+            <element signature="e#29696#29856#1" />
+            <element signature="e#31219#31582#0" />
+            <element signature="e#31219#31296#1" />
+            <element signature="e#31472#31559#0" />
+            <element signature="e#31506#31559#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lines.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="282">
+          <caret line="156151" column="57" selection-start-line="156151" selection-start-column="57" selection-end-line="156151" selection-end-column="57" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/IntelPython3/Lib/site-packages/numpy/lib/function_base.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="137">
+          <caret line="4697" selection-start-line="4697" selection-end-line="4697" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/IntelPython3/Lib/site-packages/numpy/core/fromnumeric.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="137">
+          <caret line="41" selection-start-line="41" selection-end-line="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/set_of_lines.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="8" column="37" selection-start-line="8" selection-start-column="37" selection-end-line="8" selection-end-column="37" />
+          <folding>
+            <element signature="n#!!doc" />
+            <element signature="e#330#341#0" expanded="true" />
+            <element signature="e#383#773#1" />
+            <element signature="e#4539#8749#0" />
+            <element signature="e#4539#4799#1" />
+            <element signature="e#8886#9269#1" />
+            <element signature="e#14148#14293#0" />
+            <element signature="e#14148#14253#1" />
+            <element signature="e#14442#14648#1" />
+            <element signature="e#15532#18643#0" />
+            <element signature="e#15532#15985#1" />
+            <element signature="e#18157#18235#0" />
+            <element signature="e#18812#20657#0" />
+            <element signature="e#18812#19411#1" />
+            <element signature="e#19772#20592#0" />
+            <element signature="e#20811#23600#0" />
+            <element signature="e#20811#21136#1" />
+            <element signature="e#23760#26392#0" />
+            <element signature="e#23760#24135#1" />
+            <element signature="e#26553#29633#0" />
+            <element signature="e#26553#26929#1" />
+            <element signature="e#28719#28790#0" />
+            <element signature="e#29776#30291#0" />
+            <element signature="e#29776#29962#1" />
+            <element signature="e#30440#31533#0" />
+            <element signature="e#30440#30695#1" />
+            <element signature="e#29474#30044#0" />
+            <element signature="e#31670#31747#1" />
+            <element signature="e#29598#29828#0" />
+            <element signature="e#32384#33213#0" />
+            <element signature="e#32384#32596#1" />
+            <element signature="e#31172#31697#0" />
+            <element signature="e#33368#33587#1" />
+            <element signature="e#34042#34454#0" />
+            <element signature="e#34042#34139#1" />
+            <element signature="e#34608#34776#0" />
+            <element signature="e#34608#34685#1" />
+            <element signature="e#34921#37013#0" />
+            <element signature="e#34921#35642#1" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="49" selection-start-line="4" selection-start-column="49" selection-end-line="4" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/k_means_for_lines_experiments_final.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="182" column="19" selection-start-line="182" selection-start-column="19" selection-end-line="182" selection-end-column="19" />
+          <folding>
+            <element signature="n#!!doc" />
+            <element signature="e#398#495#1" />
+            <element signature="e#795#1356#1" />
+            <element signature="e#2079#2641#0" />
+            <element signature="e#2116#2236#0" />
+            <element signature="e#2567#2641#0" />
+            <element signature="e#2864#3807#0" />
+            <element signature="e#2864#3144#1" />
+            <element signature="e#3528#3778#0" />
+            <element signature="e#3713#3778#0" />
+            <element signature="e#3964#5548#0" />
+            <element signature="e#3964#4055#1" />
+            <element signature="e#4764#5515#0" />
+            <element signature="e#5381#5515#0" />
+            <element signature="e#7714#9736#0" />
+            <element signature="e#7714#8435#1" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
